@@ -6,6 +6,7 @@ export default function Todos() {
     <div className="flex justify-center flex-wrap ">
       <TodoList />
       <TodoList />
+      <TodoList />
     </div>
   );
 }
