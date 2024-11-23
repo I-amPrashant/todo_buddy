@@ -8,8 +8,10 @@ export default function App() {
   const [taskName, setTaskName] = useState('');
   const [taskDeadline, setTaskDeadline] = useState('');
   const [taskImportance, setTaskImportance] = useState('');
+  const [addTaskClick, setAddTaskClick] = useState(false);
 
    const handleTaskAdd=()=>{
+     setAddTaskClick(true);
     const task={
       taskImportance:taskImportance,
       taskName:taskName,
@@ -20,8 +22,10 @@ export default function App() {
 
     .then(res=>{
       console.log(res.data.message);
+      setAddTaskClick(false);
     }).catch(error=>{
       console.log(error.message);
+      setAddTaskClick(false);
     })
 
    }
@@ -98,7 +102,7 @@ export default function App() {
 
       {/* todos  */}
       <div className="mt-7  px-5 md:px-8">
-        <Todos />
+        <Todos addTaskClick={addTaskClick} />
       </div>
     </div>
   );
