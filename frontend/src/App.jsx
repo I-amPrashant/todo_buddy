@@ -107,7 +107,7 @@ export default function App() {
 
       {/* todos  */}
       <div className="mt-7  px-5 md:px-8">
-        <Todos addTaskClick={addTaskClick} />
+        <Todos addTaskClick={addTaskClick} setTaskName={setTaskName} setTaskDeadline={setTaskDeadline} setTaskImportance={setTaskImportance} />
       </div>
     </div>
   );
