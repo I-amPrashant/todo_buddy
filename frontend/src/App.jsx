@@ -1,8 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import logo from "./assets/logo.png";
 import Todos from "./Todos";
+import axios from "axios";
 
 export default function App() {
+
+  const [taskName, setTaskName] = useState('');
+  const [taskDeadline, setTaskDeadline] = useState('');
+  const [taskImportance, setTaskImportance] = useState('');
+
+   const handleTaskAdd=()=>{
+    const task={
+      taskImportance:taskImportance,
+      taskName:taskName,
+      taskDeadline:taskDeadline
+    }
+
+    axios.post('http://localhost:5000/newTask',{task})
+
+    .then(res=>{
+      console.log(res.data.message);
+    }).catch(error=>{
+      console.log(error.message);
+    })
+
+   }
+
   return (
     <div className="text-center">
       {/* logo  */}
@@ -25,6 +48,8 @@ export default function App() {
           <input
             type="text"
             id="text"
+            value={taskName}
+            onChange={(e)=> setTaskName(e.target.value)}
             placeholder="Enter a task..."
             className="outline-none border-[1px] border-black border-opacity-50 rounded-lg px-3 py-1 max-w-[250px]"
           />
@@ -35,10 +60,25 @@ export default function App() {
           <input
             type="datetime-local"
             id="calendarInput"
+            value={taskDeadline}
+            onChange={(e)=>setTaskDeadline(e.target.value)}
             className="outline-none border-[1px] border-black border-opacity-50 rounded-lg px-3 py-1"
           />
         </div>
-        <button className="bg-blue-500 text-white font-bold px-4 py-1 rounded-lg">
+
+        <div className="relative">
+        <label htmlFor="calendarInput" className="absolute top-[-25px] left-5 z-10 font-bold">Importance</label>
+          <select name="importance" className="outline-none px-4 py-1 rounded-md cursor-pointer" value={taskImportance} onChange={(e)=>setTaskImportance(e.target.value)}>
+            <option value="" >--select--</option>
+            <option value="urgent" >Urgent</option>
+            <option value="important">Important</option>
+            <option value="later">Later</option>
+          </select>
+        </div>
+
+        <button className="bg-blue-500 text-white font-bold px-4 py-1 rounded-lg" onClick={()=>{
+          handleTaskAdd();
+        }}>
           Add Task
         </button>
       </div>
