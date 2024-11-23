@@ -66,6 +66,30 @@ app.get('/allTasks', async(req, res)=>{
     }
 })
 
+//delete task route
+app.delete('/deleteTask/:id', async(req, res)=>{
+    try{
+        const taskId=req.params.id;
+        const deletedTask = await Task.findByIdAndDelete(taskId);
+
+        if(deletedTask){
+            res.status(200).send({
+                success:true,
+                message:"Task deleted successfully"
+            })
+        }else{
+            res.status(400).send({
+                success:false,
+                message:"Task could not be deleted. Try again"
+            })
+        }
+    }catch(e){
+        res.status(500).send({
+            success:false,
+            message:`internal server error ${e}`
+        })
+    }
+})
 
 //app listen 
 app.listen(port , ()=>{

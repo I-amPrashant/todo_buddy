@@ -9,23 +9,28 @@ export default function App() {
   const [taskDeadline, setTaskDeadline] = useState('');
   const [taskImportance, setTaskImportance] = useState('');
   const [addTaskClick, setAddTaskClick] = useState(false);
-
+  
+  const task={
+    taskImportance:taskImportance,
+    taskName:taskName,
+    taskDeadline:taskDeadline
+  }
    const handleTaskAdd=()=>{
      setAddTaskClick(true);
-    const task={
-      taskImportance:taskImportance,
-      taskName:taskName,
-      taskDeadline:taskDeadline
-    }
-
     axios.post('http://localhost:5000/newTask',{task})
 
     .then(res=>{
       console.log(res.data.message);
       setAddTaskClick(false);
+      setTaskName('');
+      setTaskDeadline('');
+      setTaskImportance('');
     }).catch(error=>{
       console.log(error.message);
       setAddTaskClick(false);
+      setTaskName('');
+      setTaskDeadline('');
+      setTaskImportance('');
     })
 
    }
