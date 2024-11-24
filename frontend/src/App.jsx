@@ -7,6 +7,8 @@ import {  GlobalContext } from "./context/GlobalContext";
 export default function App() {
   
   const [addTaskClick, setAddTaskClick] = useState(false);
+  const [filter, setFilter] = useState('all');
+
   const {taskName, 
     setTaskName, 
     taskDeadline, 
@@ -143,13 +145,13 @@ export default function App() {
 
         {/* filter todos  */}
         <div className="border-y-[1px] border-black border-opacity-40 py-3 mt-6 flex justify-start gap-3 px-3 flex-wrap">
-          <button className="outline-none bg-[#242424] text-white rounded-lg px-4 py-1 font-semibold">
+          <button className="outline-none bg-[#242424] text-white rounded-lg px-4 py-1 font-semibold" onClick={()=>setFilter('all')}>
             All
           </button>
-          <button className="outline-none bg-sky-600 text-white rounded-lg px-4 py-1 font-semibold">
+          <button className="outline-none bg-sky-600 text-white rounded-lg px-4 py-1 font-semibold" onClick={()=>setFilter('incomplete')}>
             Incomplete
           </button>
-          <button className="outline-none bg-green-500 text-white rounded-lg px-4 py-1 font-semibold">
+          <button className="outline-none bg-green-500 text-white rounded-lg px-4 py-1 font-semibold" onClick={()=>setFilter('complete')}>
             Completed
           </button>
         </div>
@@ -158,6 +160,7 @@ export default function App() {
         <div className="mt-7  px-5 md:px-8">
           <Todos
             addTaskClick={addTaskClick}
+            filter={filter}
           />
         </div>
       </div>

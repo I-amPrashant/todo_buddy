@@ -66,6 +66,32 @@ app.get('/allTasks', async(req, res)=>{
     }
 })
 
+//get task by filter
+app.get('/allTasks/:filter', async(req, res)=>{
+    try{
+        const filter=req.params.filter
+        const allTasks=await Task.find({taskStatus:filter})
+
+        if(allTasks){
+            res.status(200).send({
+                success:true,
+                message:"all tasks fetched successfully",
+                allTasks:allTasks
+            })
+        }else{
+            res.status(400).send({
+                success:false,
+                message:"Tasks could not be fetched. Try again"
+            })
+        }
+    }catch(e){
+        res.status(500).send({
+            success:false,
+            message:`internal server error ${e}`
+        })
+    }
+})
+
 //delete task route
 app.delete('/deleteTask/:id', async(req, res)=>{
     try{
