@@ -5,14 +5,26 @@ import axios from "axios";
 import { GlobalContext } from "./context/GlobalContext";
 
 
-export default function TodoList({ todo, taskId, setDeleteTaskClick }) {
+export default function TodoList({ todo, setDeleteTaskClick }) {
   const [click, setClick] = useState(false);
   const lineRef = useRef(null);
   const boxRef = useRef(null);
   const {setUpdateClick, setTaskId, setTaskName, setTaskDeadline, setTaskImportance}=useContext(GlobalContext);
 
   const handleClick = () => {
+    if(todo.taskStatus === 'complete'){
+      return;
+    }
     setClick(!click);
+
+    axios.put(`http://localhost:5000/updateTask/status/${todo._id}`, { taskStatus: 'complete' })
+    .then(res=>{
+      console.log(res.data.message);
+    }).catch(error=>{
+      console.log('error: ', error.message);
+    })
+    
+    // animation 
     const timeline = gsap.timeline();
 
     timeline.to(lineRef.current, {
@@ -59,6 +71,9 @@ export default function TodoList({ todo, taskId, setDeleteTaskClick }) {
 };
   const handleUpdateTask=(e, id)=>{
     e.stopPropagation();
+    if(todo.taskStatus === 'complete'){
+      return;
+    }
     setUpdateClick(true);
     const correctDate=formatDateForInput(todo.taskDeadline)
     setTaskId(id);
@@ -71,7 +86,6 @@ export default function TodoList({ todo, taskId, setDeleteTaskClick }) {
 
   return (
     <div
-    id={taskId}
       ref={boxRef}
       onClick={handleClick}
       className="px-4 py-4 md:px-3 cursor-pointer w-full sm:w-1/2  md:w-[33.33%] xl:w-[25%]"
@@ -105,14 +119,14 @@ export default function TodoList({ todo, taskId, setDeleteTaskClick }) {
         {/* check mark  */}
         <div className="absolute bottom-5 right-3">
           <button className=" mt-4 rounded-full h-6 w-6 justify-center items-center border-2  border-gray-500  text-green-400">
-            <i className={`fa-solid fa-${click ? "check" : "uncheck"}`}></i>
+            <i className={`fa-solid fa-${click || todo.taskStatus === "complete" ? "check" : "uncheck"}`}></i>
           </button>
         </div>
 
         {/* cross mark after click */}
         <div
           ref={lineRef}
-          className="w-0 absolute top-1/2 left-0 h-[1px] bg-gray-600"
+          className={`${todo.taskStatus==='complete'?'w-full':'w-0'} absolute top-1/2 left-0 h-[5px] bg-black`}
         ></div>
       </Tilt>
     </div>

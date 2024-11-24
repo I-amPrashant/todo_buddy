@@ -142,6 +142,30 @@ app.put('/updateTask/:id', async(req, res)=>{
     }
 })
 
+//update task status route
+app.put('/updateTask/status/:id', async(req, res)=>{
+    try{
+
+        const taskId=req.params.id;
+        const updatedTask=await Task.updateOne({_id:taskId}, {$set:{taskStatus:req.body.taskStatus}})
+        if(updatedTask){
+            res.status(200).send({
+                success:true,
+                message:"Task status updated successfully"
+            })
+        }else{
+            res.status(400).send({
+                success:false,
+                message:"Task could not be updated. Try again"
+            })
+        }
+    }catch(e){
+        res.status(500).send({
+            success:false,
+            message:`internal server error ${e}`
+        })
+    }
+})
 
 //app listen 
 app.listen(port , ()=>{
