@@ -15,8 +15,12 @@ export default function App() {
     taskName:taskName,
     taskDeadline:taskDeadline
   }
-   const handleTaskAdd=()=>{
+  const handleTaskAdd=()=>{
+    if(!taskName || !taskDeadline || !taskImportance){
+       return alert('all fields are required');
+    }
      setAddTaskClick(true);
+     
     axios.post('http://localhost:5000/newTask',{task})
 
     .then(res=>{
@@ -85,9 +89,9 @@ export default function App() {
           </select>
         </div>
 
-        <button className="bg-blue-500 text-white font-bold px-4 py-1 rounded-lg" onClick={()=>{
+        <button className={`bg-blue-500 text-white font-bold px-4 py-1 rounded-lg} `} onClick={()=>{
           handleTaskAdd();
-        }}>
+        }} >
           Add Task
         </button>
       </div>
