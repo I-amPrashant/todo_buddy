@@ -5,11 +5,11 @@ import App from './App.jsx'
 import { GlobalProvider } from './context/GlobalContext.jsx'
 
 createRoot(document.getElementById('root')).render(
-  <GlobalProvider>
-
+  
   <StrictMode>
+    <GlobalProvider>
     <App />
+  </GlobalProvider>
   </StrictMode>
 
-  </GlobalProvider>
 )

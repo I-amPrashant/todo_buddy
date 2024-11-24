@@ -8,6 +8,8 @@ export const GlobalProvider = ({ children }) => {
     const [taskName, setTaskName] = useState('');
     const [taskDeadline, setTaskDeadline] = useState('');
     const [taskImportance, setTaskImportance] = useState('');
+    const [updateClick, setUpdateClick] = useState(false);
+    const [taskId, setTaskId] = useState('');
 
     return (
         <GlobalContext.Provider value={{    
@@ -16,7 +18,11 @@ export const GlobalProvider = ({ children }) => {
             taskDeadline, 
             setTaskDeadline, 
             taskImportance, 
-            setTaskImportance
+            setTaskImportance,
+            updateClick,
+            setUpdateClick,
+            taskId,
+            setTaskId
         }}>
             {children}
         </GlobalContext.Provider>

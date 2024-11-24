@@ -12,7 +12,7 @@ export default function App() {
     taskDeadline, 
     setTaskDeadline, 
     taskImportance, 
-    setTaskImportance}=useContext(GlobalContext);
+    setTaskImportance, updateClick, taskId}=useContext(GlobalContext);
 
   const task = {
     taskImportance: taskImportance,
@@ -25,23 +25,40 @@ export default function App() {
     }
     setAddTaskClick(true);
 
-    axios
-      .post("http://localhost:5000/newTask", { task })
-
-      .then((res) => {
+    if(!updateClick){
+      axios
+        .post("http://localhost:5000/newTask", { task })
+  
+        .then((res) => {
+          console.log(res.data.message);
+          setAddTaskClick(false);
+          setTaskName("");
+          setTaskDeadline("");
+          setTaskImportance("");
+        })
+        .catch((error) => {
+          console.log(error.message);
+          setAddTaskClick(false);
+          setTaskName("");
+          setTaskDeadline("");
+          setTaskImportance("");
+        });
+    }else{
+      axios.put(`http://localhost:5000/updateTask/${taskId}`, {task})
+      .then(res=>{
         console.log(res.data.message);
         setAddTaskClick(false);
-        setTaskName("");
-        setTaskDeadline("");
-        setTaskImportance("");
-      })
-      .catch((error) => {
+          setTaskName("");
+          setTaskDeadline("");
+          setTaskImportance("");
+      }).catch(error=>{
         console.log(error.message);
-        setAddTaskClick(false);
-        setTaskName("");
-        setTaskDeadline("");
-        setTaskImportance("");
-      });
+          setAddTaskClick(false);
+          setTaskName("");
+          setTaskDeadline("");
+          setTaskImportance("");
+      })
+    }
   };
 
   return (
@@ -120,7 +137,7 @@ export default function App() {
               handleTaskAdd();
             }}
           >
-            Add Task
+            {updateClick?'Update Task':'Add Task'}
           </button>
         </div>
 

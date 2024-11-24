@@ -1,12 +1,15 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef , useContext} from "react";
 import { Tilt } from "@jdion/tilt-react";
 import { gsap } from "gsap";
 import axios from "axios";
+import { GlobalContext } from "./context/GlobalContext";
+
 
 export default function TodoList({ todo, taskId, setDeleteTaskClick }) {
   const [click, setClick] = useState(false);
   const lineRef = useRef(null);
   const boxRef = useRef(null);
+  const {setUpdateClick, setTaskId, setTaskName, setTaskDeadline, setTaskImportance}=useContext(GlobalContext);
 
   const handleClick = () => {
     setClick(!click);
@@ -42,6 +45,28 @@ export default function TodoList({ todo, taskId, setDeleteTaskClick }) {
     })
   }
 
+
+  //for adding to the input element because data from database will be in different format than what was provided to it. 
+  const formatDateForInput = (date) => {
+    const dateObj = new Date(date); // Convert to a Date object
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+    const day = String(dateObj.getDate()).padStart(2, "0");
+    const hours = String(dateObj.getHours()).padStart(2, "0");
+    const minutes = String(dateObj.getMinutes()).padStart(2, "0");
+
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
+  const handleUpdateTask=(e, id)=>{
+    e.stopPropagation();
+    setUpdateClick(true);
+    const correctDate=formatDateForInput(todo.taskDeadline)
+    setTaskId(id);
+    setTaskName(todo.taskName);
+    setTaskDeadline(correctDate);
+    setTaskImportance(todo.taskImportance);
+  }
+
   const date=new Date(todo.taskDeadline).toLocaleString();
 
   return (
@@ -69,7 +94,7 @@ export default function TodoList({ todo, taskId, setDeleteTaskClick }) {
 
         {/* task editor  */}
         <div className="flex flex-wrap gap-3 my-5 px-3 ">
-          <button className="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg">
+          <button className="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg" onClick={(e)=>handleUpdateTask(e, todo._id)}>
             update
           </button>
           <button className="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg" onClick={(e)=>handleDeleteTask(e, todo._id)}>
