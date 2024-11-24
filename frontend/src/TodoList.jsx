@@ -53,12 +53,12 @@ export default function TodoList({ todo, taskId, setDeleteTaskClick }) {
     >
       <Tilt className="bg-white rounded-lg overflow-hidden relative">
         {/* task importance indicator  */}
-        <h1 className=" py-3 text-center bg-green-500  font-bold text-lg">
+        <h1 className={` py-3 text-center ${todo.taskImportance==='urgent'?'bg-red-500':`${todo.taskImportance==='important'?'bg-yellow-500':'bg-green-500'}`}  text-white font-bold text-lg`}>
           {todo.taskImportance}
         </h1>
 
         {/* task name   */}
-        <h2 className="text-gray-500 font-semibold mt-2 px-3 py-4 text-start">
+        <h2 className="text-gray-500 text-xl font-semibold mt-2 px-3 py-4 text-start">
           {todo.taskName}
         </h2>
 
@@ -69,6 +69,9 @@ export default function TodoList({ todo, taskId, setDeleteTaskClick }) {
 
         {/* task editor  */}
         <div className="flex flex-wrap gap-3 my-5 px-3 ">
+          <button className="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg">
+            update
+          </button>
           <button className="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg" onClick={(e)=>handleDeleteTask(e, todo._id)}>
             delete
           </button>
