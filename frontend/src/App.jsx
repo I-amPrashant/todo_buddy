@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import logo from "./assets/logo.png";
 import Todos from "./Todos";
 import axios from "axios";
@@ -7,6 +7,9 @@ import { GlobalContext } from "./context/GlobalContext";
 export default function App() {
   const [addTaskClick, setAddTaskClick] = useState(false);
   const [filter, setFilter] = useState("all");
+  const [openModal, setOpenModal] = useState(false);
+  const [submitClick, setSubmitClick] = useState(false);
+  const [email, setEmail] = useState("");
 
   const {
     taskName,
@@ -67,6 +70,35 @@ export default function App() {
         });
     }
   };
+
+  const mailOptions={
+    from:'airmax50cent@gmail.com',
+    to:email,
+    subject:'registering email',
+    text: "your email has been registered", // plain text body
+}
+
+  useEffect(() => {
+    if(!email){
+      return setOpenModal(false);
+    }
+
+    //to prevent initial render
+    if(submitClick){
+      axios
+        .post("http://localhost:5000/registerEmail", {mailOptions})
+        .then((res) => {
+          console.log(res.data.info);
+          setSubmitClick(false);
+          setOpenModal(false);
+        })
+        .catch((error) => {
+          console.log(error.message);
+          setSubmitClick(false);
+          setOpenModal(false);
+        });
+    }
+  }, [submitClick]);
 
   return (
     <div className="text-center">
@@ -176,12 +208,12 @@ export default function App() {
       </div>
 
       {/* notification form popup  */}
-      <div className="absolute bottom-5 right-8 p-4 border-gray-900 border-[1px] border-opacity-50 rounded-full text-2xl cursor-pointer ">
-        <i class="fa-solid fa-envelope"></i>
+      <div className="absolute bottom-5 right-8 p-4 border-gray-900 border-[1px] border-opacity-50 rounded-full text-2xl cursor-pointer" onClick={() => setOpenModal(true)}>
+        <i className="fa-solid fa-envelope"></i>
       </div>
 
-      {/* email registration popup  */}
-      <div className="absolute w-full h-full top-0 left-0 z-50">
+      {/* email registration   */}
+      <div className={`absolute w-full h-full top-0 left-0 z-50 ${openModal ? "block" : "hidden"}`}>
         {/* overlay */}
         <div className="relative w-full h-full bg-black bg-opacity-60 flex justify-center items-center">
           <form action="#" className="bg-white px-[40px] py-[20px] rounded-xl">
@@ -194,20 +226,22 @@ export default function App() {
                 Email:
               </label>
               <input
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
                 type="email"
                 placeholder="your email address... "
                 className="ml-3 outline-none border-[1px] border-black border-opacity-50 rounded-lg px-3 py-1"
               />
             </div>
 
-            <button type="submit" className="bg-purple-500 px-4 py-2 text-white rounded-md">Submit</button>
+            <button type="submit" className="bg-purple-500 px-4 py-2 text-white rounded-xl" onClick={(e) => {e.preventDefault();setSubmitClick(true)}}>Submit</button>
            
           </form>
         </div>
 
         {/* close button */}
-        <button className="absolute top-5 right-5 text-3xl text-white ">
-          <i class="fa-solid fa-xmark"></i>
+        <button className="absolute top-5 right-5 text-3xl text-white " onClick={() => setOpenModal(false)}>
+          <i className="fa-solid fa-xmark"></i>
         </button>
       </div>
     </div>

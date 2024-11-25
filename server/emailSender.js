@@ -13,23 +13,13 @@ const transporter=nodemailer.createTransport({
     }
 });
 
-const mailOptions={
-    from:process.env.EMAIL,
-    to:process.env.EMAIL,
-    subject:'checking nodemailer',
-    text: "Hello world?", // plain text body
-    html: "<b>Hello world?</b>", // html body
-}
-
-const sendEmail=async()=>{
+const sendEmail=async(mailOptions)=>{
     try{
         let info=await transporter.sendMail(mailOptions);
-        console.log(info);
+        return info;
     }catch(e){
-        console.log("error: ", e.message);
+        return e.message
     }
 }
-
-sendEmail();
 
 export default sendEmail;
