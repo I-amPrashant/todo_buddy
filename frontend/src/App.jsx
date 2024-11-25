@@ -71,28 +71,25 @@ export default function App() {
     }
   };
 
-  const mailOptions={
-    from:'airmax50cent@gmail.com',
-    to:email,
-    subject:'registering email',
-    text: "your email has been registered", // plain text body
-}
-
+  
   useEffect(() => {
     if(!email){
       return setOpenModal(false);
     }
-
+    
     //to prevent initial render
     if(submitClick){
+
+      const mailAddress={
+        emailA:email,
+      }
+
       axios
-        .post("http://localhost:5000/registerEmail", {mailOptions})
-        .then((res) => {
+        .post("http://localhost:5000/registerEmail", { mailAddress }).then((res) => {
           console.log(res.data.info);
           setSubmitClick(false);
           setOpenModal(false);
-        })
-        .catch((error) => {
+        }).catch((error) => {
           console.log(error.message);
           setSubmitClick(false);
           setOpenModal(false);

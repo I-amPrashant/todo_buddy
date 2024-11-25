@@ -1,9 +1,11 @@
 import express from "express";
 import cors from "cors";
+import cron from "node-cron"; //it is a library to run periodic checks on the database to identify task with deadline.
 import dotenv from "dotenv";
 import dbConnection from "./database/db.js";
 import Task from "./models/taskModel.js";
-import sendEmail from "./emailSender.js";
+// import sendEmail from "./emailSender.js";
+import User from './models/userModel.js'
 
 const app = express();
 
@@ -167,23 +169,73 @@ app.put("/updateTask/status/:id", async (req, res) => {
   }
 });
 
-//route for sending email
+let mailOptions;
+
+//route for registering email
 app.post("/registerEmail", async (req, res) => {
   try {
-     const info=await sendEmail(req.body.mailOptions);
-     
-    res.status(200).send({
-      success: true,
-      message: "email sent successfully",
-      info:info
-    });
-  } catch (e) {
+    const newEmail=await User.create(req.body.mailAddress);
+
+    //creating a new email 
+    if (newEmail) {
+        res.status(201).send({
+          success: true,
+          message: "email created  successfully",
+        });
+      } else {
+    
+        res.status(400).send({
+          success: false,
+          message: "email could not be created. try again",
+        });
+      }
+
+    //  mailOptions={
+    //     from:'airmax50cent@gmail.com',
+    //     to:req.body.mail.mail,
+    //     subject:'registering email',
+    //     text: "your email has been registered", // plain text body
+    // }
+
+    // const info = await sendEmail(mailOptions);
+
+    // res.status(200).send({
+    //   success: true,
+    //   message: "email sent successfully",
+    //   info: info,
+    // });
+  }catch (e) {
     res.status(500).send({
       success: false,
       message: `internal server error ${e}`,
     });
   }
 });
+
+
+
+//schedule cron to run every hour to check for deadline .
+// cron.schedule("*/5 * * * * ", async () => {
+//   console.log("checking deadlines... ");
+
+//   const tasks = await Task.find();
+
+//   for (let task of tasks) {
+//     const deadline = new Date(task.taskDeadline).toLocaleString();
+//     const today = new Date().toLocaleString();
+
+//     const deadlineDay = deadline.split(",")[0];
+//     const todayDay = today.split(",")[0];
+
+//     const deadlineHours = new Date(deadline).getHours();
+//     const todayHours=new Date().getHours();
+
+//     if(deadlineDay===todayDay && todayHours===deadlineHours-1){//send email 1 hour early 
+//         const info =await sendEmail(mailOptions);
+//         console.log(info);
+//     }
+//   }
+// });
 
 //app listen
 app.listen(port, () => {
