@@ -9,6 +9,7 @@ const app=express();
 app.use(cors());//for cross origin resource sharing.
 dotenv.config();//loads environment variables from .env file
 
+
 const port=process.env.PORT;
 
 //database connection 
