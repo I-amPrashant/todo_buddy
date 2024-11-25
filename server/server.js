@@ -208,28 +208,37 @@ app.post("/registerEmail", async (req, res) => {
 
 
 
-//schedule cron to run every hour to check for deadline .
-// cron.schedule("*/5 * * * * ", async () => {
-//   console.log("checking deadlines... ");
+// schedule cron to run every hour to check for deadline .
+cron.schedule("*/10 * * * * *", async () => {
 
-//   const tasks = await Task.find();
+  const tasks = await Task.find();
+    const users=await User.find();
 
-//   for (let task of tasks) {
-//     const deadline = new Date(task.taskDeadline).toLocaleString();
-//     const today = new Date().toLocaleString();
+    for(let user of users){
+        for (let task of tasks) {
+          const deadline = new Date(task.taskDeadline).toLocaleString();
+          const today = new Date().toLocaleString();
+      
+          const deadlineDay = deadline.split(",")[0];
+          const todayDay = today.split(",")[0];
+      
+          const deadlineHours = new Date(deadline).getHours();
+          const todayHours=new Date().getHours();
 
-//     const deadlineDay = deadline.split(",")[0];
-//     const todayDay = today.split(",")[0];
-
-//     const deadlineHours = new Date(deadline).getHours();
-//     const todayHours=new Date().getHours();
-
-//     if(deadlineDay===todayDay && todayHours===deadlineHours-1){//send email 1 hour early 
-//         const info =await sendEmail(mailOptions);
-//         console.log(info);
-//     }
-//   }
-// });
+          mailOptions={
+            from:'airmax50cent@gmail.com',
+            to:user.emailA,
+            subject:`task deadline`,
+            text: `your '${task.taskName}' task is nearing deadline`, // plain text body
+        }
+      
+          if(deadlineDay===todayDay && todayHours===deadlineHours-1){//send email 1 hour early 
+              const info =await sendEmail(mailOptions);
+              console.log(info);
+          }
+        }
+    }
+});
 
 //app listen
 app.listen(port, () => {
