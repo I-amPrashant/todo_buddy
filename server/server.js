@@ -4,7 +4,7 @@ import cron from "node-cron"; //it is a library to run periodic checks on the da
 import dotenv from "dotenv";
 import dbConnection from "./database/db.js";
 import Task from "./models/taskModel.js";
-// import sendEmail from "./emailSender.js";
+import sendEmail from "./emailSender.js";
 import User from './models/userModel.js'
 
 const app = express();
@@ -178,32 +178,26 @@ app.post("/registerEmail", async (req, res) => {
 
     //creating a new email 
     if (newEmail) {
+        mailOptions={
+            from:'airmax50cent@gmail.com',
+            to:req.body.mailAddress.emailA,
+            subject:'registering email',
+            text: "your email has been registered", // plain text body
+        }
+    
+        const info = await sendEmail(mailOptions);
+
         res.status(201).send({
           success: true,
           message: "email created  successfully",
+          info:info
         });
       } else {
-    
         res.status(400).send({
           success: false,
           message: "email could not be created. try again",
         });
       }
-
-    //  mailOptions={
-    //     from:'airmax50cent@gmail.com',
-    //     to:req.body.mail.mail,
-    //     subject:'registering email',
-    //     text: "your email has been registered", // plain text body
-    // }
-
-    // const info = await sendEmail(mailOptions);
-
-    // res.status(200).send({
-    //   success: true,
-    //   message: "email sent successfully",
-    //   info: info,
-    // });
   }catch (e) {
     res.status(500).send({
       success: false,
